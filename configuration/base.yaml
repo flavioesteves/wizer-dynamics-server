@@ -1,0 +1,15 @@
+application:
+  port: 8000
+  host: 0.0.0.0
+database:
+  host: "localhost"
+  port: 27017
+  username: "mongodb"
+  password: "password"
+jwt:
+  secret: "secret_to_chage"
+  expired_in: "120m"
+  max_age: 120
+cloud:
+  mongodb_uri: "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
+

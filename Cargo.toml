@@ -1,25 +1,33 @@
 [package]
-name = "server-wizer"
+name = "server_wizer"
 version = "0.1.0"
 edition = "2021"
 authors= ["Flavio Esteves <flavioafesteves@gmail.com>"]
 
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = "server_wizer"
+
 
 [dependencies]
-actix-web="4.4.0"
-actix-cors="0.6.4"
-tokio="1.32.0"
-mongodb="2.6.1"
-serde={ version ="1.0.188", features =["derive"]}
-serde_json ="1.0.107"
+actix-web="4.4"
+actix-cors="0.6"
+tokio="1.33"
+mongodb="2.7"
+serde={ version ="1.0", features =["derive"]}
+serde-aux="4.2"
+config="0.13"
+serde_json ="1.0"
 env_logger="0.10.0"
 strum="0.25"
-strum_macros="0.25.2"
-log="0.4.20"
-futures ="0.3.28"
-dotenv ="0.15.0"
+strum_macros="0.25"
+log="0.4"
+futures ="0.3"
 
 #Auth
-jsonwebtoken="8.3.0"
-argon2="0.5.2"
-chrono={ version="0.4.31", features=["serde"] }
+jsonwebtoken="8.3"
+argon2="0.5"
+chrono={ version="0.4", features=["serde"] }

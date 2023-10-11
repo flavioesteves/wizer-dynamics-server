@@ -1,25 +1,20 @@
 use actix_cors::Cors;
-use actix_web::{http::header, middleware::Logger, web, App, Error, HttpResponse, HttpServer};
+use actix_web::{middleware::Logger, web, App, HttpServer};
 
 use mongodb::Client;
-
-mod controllers;
-mod database;
-mod middleware;
-mod models;
-mod route_handlers;
-
-use dotenv::dotenv;
-use middleware::{jwt_config::Config, jwt_model::AppState};
-use route_handlers::{exercise, jwt, training_plan, user};
+use server_wizer::configuration::get_configuration;
+use server_wizer::middleware::{jwt_config::Config, jwt_model::AppState};
+use server_wizer::route_handlers::{exercise, jwt, training_plan, user};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    dotenv().ok();
+    let configuration = get_configuration().expect("Failed to read configuration");
+
     let is_cloud = false;
     let config = Config::init();
-    let mut uri =
-        std::env::var("MONGODB_URI").unwrap_or_else(|_| "mongodb://localhost:27017".into());
+    //TODO Replace this logic from here
+    let mongodb_uri = "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false";
+    let mut uri = std::env::var(mongodb_uri).unwrap_or_else(|_| "mongodb://localhost:27017".into());
 
     if is_cloud {
         uri = std::env::var("MONGODB_URI_CLOUD")
@@ -48,7 +43,10 @@ async fn main() -> std::io::Result<()> {
             )
             .wrap(Logger::default())
     })
-    .bind(("127.0.0.1", 8000))?
+    .bind((
+        configuration.application.host,
+        configuration.application.port,
+    ))?
     .run()
     .await
 }

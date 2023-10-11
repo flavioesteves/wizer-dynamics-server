@@ -1,15 +1,15 @@
 use actix_web::{
     cookie::{time::Duration as ActixWebDuration, Cookie},
     web::{Data, Json},
-    Error, HttpResponse,
+    HttpResponse,
 };
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
     Argon2,
 };
-use chrono::{prelude::*, DateTime, Duration, Utc};
+use chrono::{Duration, Utc};
 use jsonwebtoken::{encode, EncodingKey, Header};
-use mongodb::bson::{self, from_bson, oid::ObjectId, Bson, Document};
+use mongodb::bson::oid::ObjectId;
 use serde_json::json;
 
 use crate::database::user_db;
@@ -25,7 +25,7 @@ pub async fn register(request: Json<RegisterUserSchema>, data: Data<AppState>) -
 
     if user_exists {
         return HttpResponse::Conflict()
-            .json({ json!({"status": "fail", "message": "User already exists with that email"}) });
+            .json(json!({"status": "fail", "message": "User already exists with that email"}));
     }
 
     let salt = SaltString::generate(&mut OsRng);
@@ -44,7 +44,7 @@ pub async fn register(request: Json<RegisterUserSchema>, data: Data<AppState>) -
         created_at: current_time,
     };
 
-    let new_user = user_db::post_user(data.client.clone(), user_data.clone())
+    user_db::post_user(data.client.clone(), user_data.clone())
         .await
         .expect("Error on insert a new user");
 
@@ -62,7 +62,7 @@ pub async fn login(request: Json<LoginUserSchema>, data: Data<AppState>) -> Http
     }
 
     let loaded_user: User = user.clone().expect("Error in converting into User");
-    let is_valid = loaded_user._id.as_ref().map_or(false, |user_id| {
+    let is_valid = loaded_user._id.as_ref().map_or(false, |_| {
         // Implement the Arg validation
         let parsed_hash =
             PasswordHash::new(&loaded_user.password).expect("Error on access the password");

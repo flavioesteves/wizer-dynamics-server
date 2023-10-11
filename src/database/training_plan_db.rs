@@ -1,4 +1,4 @@
-use actix_web::{web::Data, Result};
+use actix_web::Result;
 use futures::stream::TryStreamExt;
 use mongodb::{
     bson::{self, doc, oid::ObjectId, Document},

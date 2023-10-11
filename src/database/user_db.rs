@@ -1,7 +1,7 @@
 use actix_web::Result;
 use futures::stream::TryStreamExt;
 use mongodb::{
-    bson::{self, doc, oid::ObjectId, Document},
+    bson::{doc, oid::ObjectId},
     error::Error,
     Client, Collection,
 };
