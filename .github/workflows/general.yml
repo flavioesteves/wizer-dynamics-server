@@ -27,7 +27,7 @@ jobs:
     # Service containers to run with the `test` container job
     services:
       # Label used to access the service container
-      mongo:
+      mongodb:
         # Docker Hub image 
         image: mongo
         env:
@@ -82,7 +82,7 @@ jobs:
     name: Clippy
     runs-on: ubuntu-latest
     services:
-      mongo:
+      mongodb:
         image: mongo
         env:
           MONGO_INITDB_ROOT_USERNAME: test
@@ -114,7 +114,7 @@ jobs:
     name: Code coverage
     runs-on: ubuntu-latest
     services:
-      mongo:
+      mongodb:
         image: mongo
         env:
           MONGO_INITDB_ROOT_USERNAME: test
@@ -125,9 +125,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
         ports:
-          - 27017:5432
+          - 27017:27017
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
