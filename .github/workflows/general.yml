@@ -29,7 +29,7 @@ jobs:
       # Label used to access the service container
       mongo:
         # Docker Hub image 
-        image: mongo:latest
+        image: mongo
         env:
           MONGO_INITDB_ROOT_USERNAME: test
           MONGO_INITDB_ROOT_PASSWORD: password
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mongo:
-        image: mongo:latest
+        image: mongo
         env:
           MONGO_INITDB_ROOT_USERNAME: test
           MONGO_INITDB_ROOT_PASSWORD: password
@@ -115,7 +115,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mongo:
-        image: mongo:latest
+        image: mongo
         env:
           MONGO_INITDB_ROOT_USERNAME: test
           MONGO_INITDB_ROOT_PASSWORD: password
