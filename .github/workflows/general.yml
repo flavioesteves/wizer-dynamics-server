@@ -27,10 +27,11 @@ jobs:
     # Service containers to run with the `test` container job
     services:
       # Label used to access the service container
-      mongodb:
+      mongo:
         # Docker Hub image 
         image: mongo
-        env:
+        restart: always
+        environment:
           MONGO_INITDB_ROOT_USERNAME: test
           MONGO_INITDB_ROOT_PASSWORD: password
           MONGO_INITDB_DATABASE: test
@@ -82,9 +83,9 @@ jobs:
     name: Clippy
     runs-on: ubuntu-latest
     services:
-      mongodb:
+      mongo:
         image: mongo
-        env:
+        environment:
           MONGO_INITDB_ROOT_USERNAME: test
           MONGO_INITDB_ROOT_PASSWORD: password
           MONGO_INITDB_DATABASE: test
@@ -114,9 +115,9 @@ jobs:
     name: Code coverage
     runs-on: ubuntu-latest
     services:
-      mongodb:
+      mongo:
         image: mongo
-        env:
+        environment:
           MONGO_INITDB_ROOT_USERNAME: test
           MONGO_INITDB_ROOT_PASSWORD: password
           MONGO_INITDB_DATABASE: test
