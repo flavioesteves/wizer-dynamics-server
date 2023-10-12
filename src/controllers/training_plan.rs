@@ -26,14 +26,16 @@ pub async fn add_training(data: Data<AppState>, req: Json<TrainingPlan>) -> Http
         req.estimated_time.clone(),
         req.schedule_days.clone(),
     );
-    let insert = match training_plan_db::post_training(data.client.clone(), exercise).await {
-        Ok(result) => result,
-        Err(err) => {
-            eprintln!("CT Training: {:?}", err);
-            return HttpResponse::InternalServerError().finish();
-        }
-    };
-
+    let insert;
+    {
+        match training_plan_db::post_training(data.client.clone(), exercise).await {
+            Ok(result) => insert = result,
+            Err(err) => {
+                eprintln!("CT Training: {:?}", err);
+                return HttpResponse::InternalServerError().finish();
+            }
+        };
+    }
     HttpResponse::Ok().json(insert)
 }
 

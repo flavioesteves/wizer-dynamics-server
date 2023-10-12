@@ -23,14 +23,16 @@ pub async fn add_exercise(data: Data<AppState>, req: Json<Exercise>) -> HttpResp
         req.video.clone(),
         req.photo.clone(),
     );
-    let insert = match exercise_db::post_exercise(data.client.clone(), exercise.clone()).await {
-        Ok(result) => result,
-        Err(err) => {
-            eprintln!("CT Exercise: Error to post {:?}", err);
-            return HttpResponse::InternalServerError().finish();
-        }
-    };
-
+    let insert;
+    {
+        match exercise_db::post_exercise(data.client.clone(), exercise.clone()).await {
+            Ok(result) => insert = result,
+            Err(err) => {
+                eprintln!("CT Exercise: Error to post {:?}", err);
+                return HttpResponse::InternalServerError().finish();
+            }
+        };
+    }
     HttpResponse::Ok().json(insert)
 }
 
