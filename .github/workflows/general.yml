@@ -53,8 +53,6 @@ jobs:
       # A GitHub Action that implements smart caching for rust/cargo projects with sensible defaults.
       # TODO Rust Cache Action
       
-      - name: Install MongoDB Rust driver
-        run: cargo install mongodb
 
       - name: Run tests
         run: cargo test
