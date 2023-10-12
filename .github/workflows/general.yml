@@ -29,20 +29,16 @@ jobs:
       # Label used to access the service container
       mongo:
         # Docker Hub image 
-        image: mongo
-        environment:
+        image: mongo:lastest
+        env:
           MONGO_INITDB_ROOT_USERNAME: test
           MONGO_INITDB_ROOT_PASSWORD: password
           MONGO_INITDB_DATABASE: test
-        options: >-
-          --health-cmd mongo
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
         # When you map ports using the ports keyword, GitHub uses the --publish command to publish the container’s ports to the Docker host
         # Opens tcp port 27017 on the host and service container
         ports:
           - 27017:27017
+        options: --auth --replSet rs0
     steps:
         # Downloads a copy of the code in your repository before running CI tests
       - name: Check out repository code
@@ -84,7 +80,7 @@ jobs:
     services:
       mongo:
         image: mongo
-        environment:
+        env:
           MONGO_INITDB_ROOT_USERNAME: test
           MONGO_INITDB_ROOT_PASSWORD: password
           MONGO_INITDB_DATABASE: test
@@ -116,7 +112,7 @@ jobs:
     services:
       mongo:
         image: mongo
-        environment:
+        env:
           MONGO_INITDB_ROOT_USERNAME: test
           MONGO_INITDB_ROOT_PASSWORD: password
           MONGO_INITDB_DATABASE: test

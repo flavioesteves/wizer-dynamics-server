@@ -4,23 +4,19 @@ use actix_web::{middleware::Logger, web, App, HttpServer};
 use mongodb::Client;
 use server_wizer::configuration::get_configuration;
 use server_wizer::middleware::{jwt_config::Config, jwt_model::AppState};
-use server_wizer::route_handlers::{exercise, jwt, training_plan, user};
+use server_wizer::route_handlers::{exercise, health_check, jwt, training_plan, user};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    let config = Config::init();
     let configuration = get_configuration().expect("Failed to read configuration");
 
-    let is_cloud = false;
-    let config = Config::init();
     //TODO Replace this logic from here
-    let mongodb_uri = "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false";
-    let mut uri = std::env::var(mongodb_uri).unwrap_or_else(|_| "mongodb://localhost:27017".into());
+    let mongodb_uri = "mongodb://localhost:27017";
 
-    if is_cloud {
-        uri = std::env::var("MONGODB_URI_CLOUD")
-            .unwrap_or_else(|_| "mongodb://localhost:270217".into());
-    }
-    let client = Client::with_uri_str(uri).await.expect("failed to connect");
+    let client = Client::with_uri_str(mongodb_uri)
+        .await
+        .expect("failed to connect");
 
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
 
@@ -34,6 +30,7 @@ async fn main() -> std::io::Result<()> {
             .configure(exercise::config_routes)
             .configure(training_plan::config_routes)
             .configure(jwt::config_routes)
+            .configure(health_check::config_routes)
             .wrap(
                 //TODO remove this devMode
                 Cors::default()
