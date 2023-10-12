@@ -34,7 +34,6 @@ pub async fn get_all_users(data: Data<AppState>) -> HttpResponse {
 }
 
 pub async fn get_user_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResponse {
-    println!("User _id: {}", _id);
     let user = user_db::get_user_by_id(data.client.clone(), _id.clone())
         .await
         .expect("CT USER: Error failed to retrieve the user with _id");
@@ -47,10 +46,10 @@ pub async fn get_user_logged(
     request: HttpRequest,
     _: jwt_auth::JwtMiddleware,
 ) -> HttpResponse {
-    let ext = request.extensions();
-    let user_id = ext
+    let user_id = *request
+        .extensions()
         .get::<ObjectId>()
-        .expect("Expected user Id on the token");
+        .expect("Expected user id on the token");
 
     let user = user_db::get_user_by_id(data.client.clone(), user_id.to_string())
         .await

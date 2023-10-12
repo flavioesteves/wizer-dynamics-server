@@ -23,20 +23,23 @@ pub async fn add_exercise(data: Data<AppState>, req: Json<Exercise>) -> HttpResp
         req.video.clone(),
         req.photo.clone(),
     );
-    let insert = exercise_db::post_exercise(data.client.clone(), exercise)
-        .await
-        .expect("CT Exercise: Error to post");
+    let insert = match exercise_db::post_exercise(data.client.clone(), exercise.clone()).await {
+        Ok(result) => result,
+        Err(err) => {
+            eprintln!("CT Exercise: Error to post {:?}", err);
+            return HttpResponse::InternalServerError().finish();
+        }
+    };
 
     HttpResponse::Ok().json(insert)
 }
 
 pub async fn get_exercise_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResponse {
-    println!("exercise _id: {}", _id);
     let exercise = exercise_db::get_exercise_by_id(data.client.clone(), _id.clone())
         .await
         .expect("CT Exercise: Error failed to retrieve the exercise with _id");
 
-    HttpResponse::Ok().json(exercise)
+    HttpResponse::Ok().json(&exercise)
 }
 
 pub async fn update_exercise_by_id(
@@ -62,7 +65,7 @@ pub async fn update_exercise_by_id(
         .await
         .expect("CT Exercise: Error failed to update the exercise");
 
-    return HttpResponse::Ok().json(updated_exercise);
+    HttpResponse::Ok().json(&updated_exercise)
 }
 
 pub async fn delete_exercise_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResponse {
@@ -70,5 +73,5 @@ pub async fn delete_exercise_by_id(data: Data<AppState>, _id: Path<String>) -> H
         .await
         .expect("CT Exercise: Error failed to delete the exercise");
 
-    HttpResponse::Ok().json(exercise)
+    HttpResponse::Ok().json(&exercise)
 }

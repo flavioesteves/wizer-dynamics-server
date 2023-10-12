@@ -9,10 +9,13 @@ use crate::middleware::jwt_model::AppState;
 use crate::models::training_plan::TrainingPlan;
 
 pub async fn get_all_trainings(data: Data<AppState>) -> HttpResponse {
-    let exercises = training_plan_db::get_all_trainings(data.client.clone())
-        .await
-        .expect("CT Training: Error failed to retrieve from DB");
-
+    let exercises = match training_plan_db::get_all_trainings(data.client.clone()).await {
+        Ok(result) => result,
+        Err(err) => {
+            eprintln!("CT Trainig: {:?}", err);
+            return HttpResponse::InternalServerError().finish();
+        }
+    };
     HttpResponse::Ok().json(exercises)
 }
 
@@ -23,19 +26,29 @@ pub async fn add_training(data: Data<AppState>, req: Json<TrainingPlan>) -> Http
         req.estimated_time.clone(),
         req.schedule_days.clone(),
     );
-    let insert = training_plan_db::post_training(data.client.clone(), exercise)
-        .await
-        .expect("CT Training: Error to post");
+    let insert = match training_plan_db::post_training(data.client.clone(), exercise).await {
+        Ok(result) => result,
+        Err(err) => {
+            eprintln!("CT Training: {:?}", err);
+            return HttpResponse::InternalServerError().finish();
+        }
+    };
 
     HttpResponse::Ok().json(insert)
 }
 
 pub async fn get_training_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResponse {
-    println!("exercise _id: {}", _id);
-    let exercise = training_plan_db::get_training_by_id(data.client.clone(), _id.clone())
-        .await
-        .expect("CT Training: Error failed to retrieve the exercise with _id");
-
+    let exercise =
+        match training_plan_db::get_training_by_id(data.client.clone(), _id.clone()).await {
+            Ok(result) => result,
+            Err(err) => {
+                eprintln!(
+                    "CT Training: Error failed to retrieve the exercise with _id: {:?}",
+                    err
+                );
+                return HttpResponse::InternalServerError().finish();
+            }
+        };
     HttpResponse::Ok().json(exercise)
 }
 
@@ -47,7 +60,8 @@ pub async fn update_training_by_id(
     let id = _id.into_inner();
 
     if id.is_empty() {
-        return HttpResponse::BadRequest().body("Invalid ID");
+        eprintln!("CT Training: empty id");
+        return HttpResponse::InternalServerError().finish();
     };
 
     let training_data = TrainingPlan {
@@ -58,16 +72,26 @@ pub async fn update_training_by_id(
         schedule_days: req.schedule_days.clone(),
     };
 
-    let updated_training = training_plan_db::update_training(data.client.clone(), training_data)
-        .await
-        .expect("CT Training: Error failed to update the training");
-    return HttpResponse::Ok().json(updated_training);
+    let updated_training =
+        match training_plan_db::update_training(data.client.clone(), training_data).await {
+            Ok(result) => result,
+            Err(err) => {
+                eprintln!("CT Training: Error failed to update the training {:?}", err);
+                return HttpResponse::InternalServerError().finish();
+            }
+        };
+    HttpResponse::Ok().json(updated_training)
 }
 
 pub async fn delete_training_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResponse {
-    let exercise = training_plan_db::delete_training_by_id(data.client.clone(), _id.clone())
-        .await
-        .expect("CT Training: Error failed to delete the user");
+    let exercise =
+        match training_plan_db::delete_training_by_id(data.client.clone(), _id.clone()).await {
+            Ok(result) => result,
+            Err(err) => {
+                eprintln!("CT Training: Error failed to delete the user {:?}", err);
+                return HttpResponse::InternalServerError().finish();
+            }
+        };
 
     HttpResponse::Ok().json(exercise)
 }

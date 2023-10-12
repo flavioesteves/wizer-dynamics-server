@@ -13,7 +13,7 @@ use crate::models::user::User;
 const DB_NAME: &str = "wizer";
 const COLLECTION_NAME: &str = "users";
 
-/**!
+/**
  * Retrive all users from the collection users
  * Sorted without any order
  */
@@ -34,11 +34,10 @@ pub async fn get_all_users(client: Client) -> Result<Vec<User>, Error> {
         users.push(user);
     }
 
-    println!("User: {:?}", users);
     Ok(users)
 }
 
-/**!
+/**
  * Retrieve a user by the parameter _id
  */
 pub async fn get_user_by_id(client: Client, _id: String) -> Result<Option<User>, Error> {
