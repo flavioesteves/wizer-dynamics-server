@@ -62,7 +62,7 @@ jobs:
     name: Rustfmt
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           # Specific to dtolnay/rust-toolchain: Comma-separated string of additional components to install
@@ -72,51 +72,47 @@ jobs:
 
   
   # `clippy` container job
-#  clippy:
-#    name: Clippy
-#    runs-on: ubuntu-latest
-#    services:
-#      mongo:
-#        image: mongo:latest
-#        env:
-#          MONGO_INITDB_ROOT_USERNAME: test
-#          MONGO_INITDB_ROOT_PASSWORD: password
-#        ports:
-#          - 27017:27017
-#   steps:
-#      - uses: actions/checkout@v3
-#      - uses: dtolnay/rust-toolchain@stable
-#        with:
-#          components: clippy
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:latest
+        env:
+          MONGO_INITDB_ROOT_USERNAME: test
+          MONGO_INITDB_ROOT_PASSWORD: password
+        ports:
+          - 27017:27017
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
       # TODO Implement Rust Cache
 
-#      - name: Install MongoDB Rust driver
-#        run: cargo install mongodb
       # TODO migrate Database
-#      - name: Linting
-#        run: cargo clippy -- -D warnings
+      - name: Linting
+        run: cargo clippy -- -D warnings
 
   # `coverage` container job
-#  coverage:
-#    name: Code coverage
-#    runs-on: ubuntu-latest
-#    services:
-#      mongo:
-#        image: mongo
-#        env:
-#          MONGO_INITDB_ROOT_USERNAME: test
-#          MONGO_INITDB_ROOT_PASSWORD: password
-#          MONGO_INITDB_DATABASE: test
-#        ports:
-#          - 27017:27017
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v3
-#      - uses: dtolnay/rust-toolchain@stable
+  coverage:
+    name: Code coverage
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo
+        env:
+          MONGO_INITDB_ROOT_USERNAME: test
+          MONGO_INITDB_ROOT_PASSWORD: password
+          MONGO_INITDB_DATABASE: test
+        ports:
+          - 27017:27017
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
       # Todo Implement Rust Cache
 
-#      - name: Install MongoDb Rust driver
-#        run: cargo install mongodb
       # TODO migrate Database
-#      - name: Generate code coverage
-#        run: cargo install cargo-tarpaulin && cargo tarpaulin --verbose --workspace
+      - name: Generate code coverage
+        run: cargo install cargo-tarpaulin && cargo tarpaulin --verbose --workspace
