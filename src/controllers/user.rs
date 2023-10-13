@@ -22,23 +22,32 @@ pub async fn post_user(request: Json<User>) -> Result<HttpResponse, Error> {
         current_time,
     );
 
-    Ok(HttpResponse::Ok().json(json!(user)))
+    Ok(HttpResponse::Ok().json(json!(&user)))
 }
 
 pub async fn get_all_users(data: Data<AppState>) -> HttpResponse {
-    let users = user_db::get_all_users(data.client.clone())
-        .await
-        .expect("CT USER: Error failed to retrieve users");
-
-    HttpResponse::Ok().json(users)
+    let users = match user_db::get_all_users(data.client.clone()).await {
+        Ok(users) => users,
+        Err(err) => {
+            eprintln!("CT USER: Error failed to retrieve users {:?}", err);
+            return HttpResponse::InternalServerError().finish();
+        }
+    };
+    HttpResponse::Ok().json(&users)
 }
 
 pub async fn get_user_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResponse {
-    let user = user_db::get_user_by_id(data.client.clone(), _id.clone())
-        .await
-        .expect("CT USER: Error failed to retrieve the user with _id");
-
-    HttpResponse::Ok().json(user)
+    let user = match user_db::get_user_by_id(data.client.clone(), _id.clone()).await {
+        Ok(user) => user,
+        Err(err) => {
+            eprintln!(
+                "CT USER: Error failed to retrieve the user with _id {:?}",
+                err
+            );
+            return HttpResponse::InternalServerError().finish();
+        }
+    };
+    HttpResponse::Ok().json(&user)
 }
 
 pub async fn get_user_logged(
@@ -51,9 +60,16 @@ pub async fn get_user_logged(
         .get::<ObjectId>()
         .expect("Expected user id on the token");
 
-    let user = user_db::get_user_by_id(data.client.clone(), user_id.to_string())
-        .await
-        .expect("CT USER: Error failed to rectrieve the user with _id");
+    let user = match user_db::get_user_by_id(data.client.clone(), user_id.to_string()).await {
+        Ok(user) => user,
+        Err(err) => {
+            eprintln!(
+                "CT USER: Error failed to rectrieve the user with _id {:?}",
+                err
+            );
+            return HttpResponse::InternalServerError().finish();
+        }
+    };
 
-    HttpResponse::Ok().json(user)
+    HttpResponse::Ok().json(&user)
 }

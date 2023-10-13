@@ -26,8 +26,17 @@ strum="0.25"
 strum_macros="0.25"
 log="0.4"
 futures ="0.3"
+reqwest = {version="0.11", default-features =false, features=["json", "rustls-tls"]}
 
 #Auth
 jsonwebtoken="8.3"
 argon2="0.5"
 chrono={ version="0.4", features=["serde"] }
+
+
+[dev-dependencies]
+fake = "2.8"
+wiremock ="0.5"
+serde_json = "1.0"
+quickcheck ="1.0"
+quickcheck_macros = "1.0"

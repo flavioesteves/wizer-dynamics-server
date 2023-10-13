@@ -9,14 +9,14 @@ use crate::middleware::jwt_model::AppState;
 use crate::models::training_plan::TrainingPlan;
 
 pub async fn get_all_trainings(data: Data<AppState>) -> HttpResponse {
-    let exercises = match training_plan_db::get_all_trainings(data.client.clone()).await {
-        Ok(result) => result,
+    let trainings = match training_plan_db::get_all_trainings(data.client.clone()).await {
+        Ok(trainings) => trainings,
         Err(err) => {
-            eprintln!("CT Trainig: {:?}", err);
+            eprintln!("CT Trainigs: {:?}", err);
             return HttpResponse::InternalServerError().finish();
         }
     };
-    HttpResponse::Ok().json(exercises)
+    HttpResponse::Ok().json(&trainings)
 }
 
 pub async fn add_training(data: Data<AppState>, req: Json<TrainingPlan>) -> HttpResponse {
@@ -29,7 +29,7 @@ pub async fn add_training(data: Data<AppState>, req: Json<TrainingPlan>) -> Http
     let insert;
     {
         match training_plan_db::post_training(data.client.clone(), exercise).await {
-            Ok(result) => insert = result,
+            Ok(training_plan) => insert = training_plan,
             Err(err) => {
                 eprintln!("CT Training: {:?}", err);
                 return HttpResponse::InternalServerError().finish();
@@ -42,7 +42,7 @@ pub async fn add_training(data: Data<AppState>, req: Json<TrainingPlan>) -> Http
 pub async fn get_training_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResponse {
     let exercise =
         match training_plan_db::get_training_by_id(data.client.clone(), _id.clone()).await {
-            Ok(result) => result,
+            Ok(training) => training,
             Err(err) => {
                 eprintln!(
                     "CT Training: Error failed to retrieve the exercise with _id: {:?}",
@@ -51,7 +51,7 @@ pub async fn get_training_by_id(data: Data<AppState>, _id: Path<String>) -> Http
                 return HttpResponse::InternalServerError().finish();
             }
         };
-    HttpResponse::Ok().json(exercise)
+    HttpResponse::Ok().json(&exercise)
 }
 
 pub async fn update_training_by_id(
@@ -63,7 +63,7 @@ pub async fn update_training_by_id(
 
     if id.is_empty() {
         eprintln!("CT Training: empty id");
-        return HttpResponse::InternalServerError().finish();
+        return HttpResponse::BadRequest().finish();
     };
 
     let training_data = TrainingPlan {
@@ -76,24 +76,24 @@ pub async fn update_training_by_id(
 
     let updated_training =
         match training_plan_db::update_training(data.client.clone(), training_data).await {
-            Ok(result) => result,
+            Ok(training) => training,
             Err(err) => {
                 eprintln!("CT Training: Error failed to update the training {:?}", err);
                 return HttpResponse::InternalServerError().finish();
             }
         };
-    HttpResponse::Ok().json(updated_training)
+    HttpResponse::Ok().json(&updated_training)
 }
 
 pub async fn delete_training_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResponse {
-    let exercise =
+    let deleted_training =
         match training_plan_db::delete_training_by_id(data.client.clone(), _id.clone()).await {
-            Ok(result) => result,
+            Ok(training) => training,
             Err(err) => {
                 eprintln!("CT Training: Error failed to delete the user {:?}", err);
                 return HttpResponse::InternalServerError().finish();
             }
         };
 
-    HttpResponse::Ok().json(exercise)
+    HttpResponse::Ok().json(&deleted_training)
 }
