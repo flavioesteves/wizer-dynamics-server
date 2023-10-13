@@ -1,3 +1,4 @@
+use crate::database::database_configuration::{DBCollectionSettings, DBSettings};
 use actix_web::Result;
 use futures::stream::TryStreamExt;
 use mongodb::{
@@ -9,13 +10,10 @@ use mongodb::{
 
 use crate::models::exercise::Exercise;
 
-// Constants
-const DB_NAME: &str = "wizer";
-const COLLECTION_NAME: &str = "exercises";
-
 pub async fn post_exercise(client: Client, exercise: Exercise) -> Result<(), Error> {
-    let exercises_collection: Collection<Document> =
-        client.database(DB_NAME).collection(COLLECTION_NAME);
+    let exercises_collection: Collection<Document> = client
+        .database(&DBSettings::default().name)
+        .collection(DBCollectionSettings::Exercises.value());
     let mut exercise_doc =
         bson::to_document(&exercise).expect("DB: Failed to Convert Exercise to Document");
     exercise_doc.insert("_id", ObjectId::new());
@@ -29,8 +27,9 @@ pub async fn post_exercise(client: Client, exercise: Exercise) -> Result<(), Err
 }
 
 pub async fn get_all_exercises(client: Client) -> Result<Vec<Exercise>, Error> {
-    let exercises_collection: Collection<Exercise> =
-        client.database(DB_NAME).collection(COLLECTION_NAME);
+    let exercises_collection: Collection<Exercise> = client
+        .database(&DBSettings::default().name)
+        .collection(DBCollectionSettings::Exercises.value());
     let mut exercises: Vec<Exercise> = Vec::new();
 
     let mut cursors = exercises_collection
@@ -49,8 +48,9 @@ pub async fn get_all_exercises(client: Client) -> Result<Vec<Exercise>, Error> {
 }
 
 pub async fn get_exercise_by_id(client: Client, _id: String) -> Result<Option<Exercise>, Error> {
-    let exercises_collection: Collection<Exercise> =
-        client.database(DB_NAME).collection(COLLECTION_NAME);
+    let exercises_collection: Collection<Exercise> = client
+        .database(&DBSettings::default().name)
+        .collection(DBCollectionSettings::Exercises.value());
 
     if let Ok(obj_id) = ObjectId::parse_str(&_id) {
         if let Some(exercise) = exercises_collection
@@ -64,8 +64,9 @@ pub async fn get_exercise_by_id(client: Client, _id: String) -> Result<Option<Ex
 }
 
 pub async fn update_exercise(client: Client, exercise: Exercise) -> Result<UpdateResult, Error> {
-    let exercises_collection: Collection<Exercise> =
-        client.database(DB_NAME).collection(COLLECTION_NAME);
+    let exercises_collection: Collection<Exercise> = client
+        .database(&DBSettings::default().name)
+        .collection(DBCollectionSettings::Exercises.value());
     let filter = doc! {"_id": exercise._id};
     let new_doc = doc! {
         "$set": {
@@ -85,8 +86,9 @@ pub async fn update_exercise(client: Client, exercise: Exercise) -> Result<Updat
 }
 
 pub async fn delete_exercise_by_id(client: Client, _id: String) -> Result<Option<Exercise>, Error> {
-    let exercises_collection: Collection<Exercise> =
-        client.database(DB_NAME).collection(COLLECTION_NAME);
+    let exercises_collection: Collection<Exercise> = client
+        .database(&DBSettings::default().name)
+        .collection(DBCollectionSettings::Exercises.value());
     if let Ok(obj_id) = ObjectId::parse_str(&_id) {
         if let DeleteResult {
             deleted_count: 1, ..

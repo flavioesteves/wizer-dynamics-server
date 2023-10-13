@@ -6,6 +6,8 @@ database:
   port: 27017
   username: "mongodb"
   password: "password"
+  model: "mongodb"
+  database_name: "wizer"
 jwt:
   secret: "secret_to_chage"
   expired_in: "120m"

@@ -1,3 +1,5 @@
+use crate::database::database_configuration::{DBCollectionSettings, DBSettings};
+use crate::models::user::User;
 use actix_web::Result;
 use futures::stream::TryStreamExt;
 use mongodb::{
@@ -7,18 +9,14 @@ use mongodb::{
 };
 use std::option::Option;
 
-use crate::models::user::User;
-
-//Constants
-const DB_NAME: &str = "wizer";
-const COLLECTION_NAME: &str = "users";
-
 /**
  * Retrive all users from the collection users
  * Sorted without any order
  */
 pub async fn get_all_users(client: Client) -> Result<Vec<User>, Error> {
-    let users_collection: Collection<User> = client.database(DB_NAME).collection(COLLECTION_NAME);
+    let users_collection: Collection<User> = client
+        .database(&DBSettings::default().name)
+        .collection(DBCollectionSettings::Users.value());
 
     let mut users: Vec<User> = Vec::new();
     let mut cursors = users_collection
@@ -41,7 +39,9 @@ pub async fn get_all_users(client: Client) -> Result<Vec<User>, Error> {
  * Retrieve a user by the parameter _id
  */
 pub async fn get_user_by_id(client: Client, _id: String) -> Result<Option<User>, Error> {
-    let users_collection: Collection<User> = client.database(DB_NAME).collection(COLLECTION_NAME);
+    let users_collection: Collection<User> = client
+        .database(&DBSettings::default().name)
+        .collection(DBCollectionSettings::Users.value());
 
     if let Ok(obj_id) = ObjectId::parse_str(&_id) {
         if let Some(user) = users_collection
@@ -56,7 +56,9 @@ pub async fn get_user_by_id(client: Client, _id: String) -> Result<Option<User>,
 }
 
 pub async fn get_user_by_email(client: Client, email: String) -> Result<Option<User>, Error> {
-    let users_collection: Collection<User> = client.database(DB_NAME).collection(COLLECTION_NAME);
+    let users_collection: Collection<User> = client
+        .database(&DBSettings::default().name)
+        .collection(DBCollectionSettings::Users.value());
 
     if let Some(user) = users_collection
         .find_one(doc! {"email": email}, None)
@@ -69,7 +71,9 @@ pub async fn get_user_by_email(client: Client, email: String) -> Result<Option<U
 }
 
 pub async fn post_user(client: Client, user: User) -> Result<(), Error> {
-    let users_collection: Collection<User> = client.database(DB_NAME).collection(COLLECTION_NAME);
+    let users_collection: Collection<User> = client
+        .database(&DBSettings::default().name)
+        .collection(DBCollectionSettings::Users.value());
 
     users_collection
         .insert_one(user, None)

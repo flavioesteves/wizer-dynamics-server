@@ -5,14 +5,14 @@ use server_wizer::configuration::get_configuration;
 use server_wizer::middleware::jwt_config::Config;
 use server_wizer::startup::run;
 
-//#[tokio::main]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let config = Config::init();
     let configuration = get_configuration().expect("Failed to read configuration");
-
-    //TODO Replace this logic from here
-    let mongodb_uri = "mongodb://localhost:27017";
+    let mongodb_uri = format!(
+        "{}://{}:{}",
+        configuration.database.model, configuration.database.host, configuration.database.port
+    );
 
     let db_client = Client::with_uri_str(mongodb_uri)
         .await

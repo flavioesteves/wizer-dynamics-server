@@ -1,4 +1,5 @@
 use mongodb::Client;
+use server_wizer::configuration::get_configuration;
 use server_wizer::middleware::jwt_config::Config;
 use server_wizer::startup::run;
 use std::net::TcpListener;
@@ -25,11 +26,13 @@ pub struct TestApp {
 }
 
 async fn spawn_app() -> TestApp {
-    //TODO create a database pool for tests
-    //For now is using the same logic of prod
     let config = Config::init();
-    //TODO Replace this logic from here
-    let mongodb_uri = "mongodb://localhost:27017";
+    let c = get_configuration().expect("Failed to read configuration");
+
+    let mongodb_uri = format!(
+        "{}://{}:{}",
+        c.database.model, c.database.host, c.database.port,
+    );
     let db_client = Client::with_uri_str(mongodb_uri)
         .await
         .expect("Failed to connect");
