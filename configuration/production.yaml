@@ -1,2 +1,10 @@
 application:
+  port: 8000
   host: 0.0.0.0
+database:
+  host: 172.17.0.2
+  port: 27017
+  username: "mongodb"
+  password: "password"
+  model: "mongodb"
+  database_name: "wizer"

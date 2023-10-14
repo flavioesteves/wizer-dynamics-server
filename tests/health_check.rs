@@ -4,22 +4,7 @@ use server_wizer::middleware::jwt_config::Config;
 use server_wizer::startup::run;
 use std::net::TcpListener;
 
-#[tokio::test]
-async fn health_check_works() {
-    // Arrange
-    let app = spawn_app().await;
-    let client = reqwest::Client::new();
-
-    // Act
-    let response = client
-        .get(&format!("{}/health_check", &app.address))
-        .send()
-        .await
-        .expect("Failed to execute request.");
-
-    // Assert
-    assert!(response.status().is_success());
-}
+use 
 
 pub struct TestApp {
     pub address: String,
@@ -50,3 +35,21 @@ async fn spawn_app() -> TestApp {
 
     TestApp { address }
 }
+
+#[tokio::test]
+async fn health_check_works() {
+    // Arrange
+    let app = spawn_app().await;
+    let client = reqwest::Client::new();
+
+    // Act
+    let response = client
+        .get(&format!("{}/health_check", &app.address))
+        .send()
+        .await
+        .expect("Failed to execute request.");
+
+    // Assert
+    assert!(response.status().is_success());
+}
+
