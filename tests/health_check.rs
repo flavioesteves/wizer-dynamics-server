@@ -4,8 +4,6 @@ use server_wizer::middleware::jwt_config::Config;
 use server_wizer::startup::run;
 use std::net::TcpListener;
 
-use 
-
 pub struct TestApp {
     pub address: String,
 }
@@ -52,4 +50,3 @@ async fn health_check_works() {
     // Assert
     assert!(response.status().is_success());
 }
-
