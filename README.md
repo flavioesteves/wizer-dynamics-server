@@ -1,11 +1,13 @@
-  - [Rust](https://www.rust-lang.org/)
-    * Dependencies:
-      - [actix-web](https://actix.rs/)
-      - [tokio](https://tokio.rs/)
-      - [mongodb](https://docs.rs/mongodb/latest/mongodb/)
-      
-  - [MongoDB](https://www.mongodb.com/)
+# Tech
+- [Rust](https://www.rust-lang.org/)
+- [MongoDB](https://www.mongodb.com/)
+- [mongodb](https://docs.rs/mongodb/latest/mongodb/)
+# Dependencies
+- [actix-web](https://actix.rs/)
+- [tokio](https://tokio.rs/)
 
+# DataBase
+- Runs on a Docker image of [MongoDB](https://hub.docker.com/_/mongo/)
 
-## - Local Project Configs to Run
-  - MongoDB: docker run -d --name mongodb-container -p 27017:27017 mongo 
+# CI/CD
+- GitHub Actions
