@@ -24,10 +24,6 @@ jobs:
     services:
       mongo:
         image: mongo:latest
-        env:
-          MONGO_INITDB_ROOT_USERNAME: mongodb
-          MONGO_INITDB_ROOT_PASSWORD: password
-          MONGO_INITDB_DATABASE: wizer
         ports:
           - 27017:27017
     steps:
@@ -65,10 +61,6 @@ jobs:
     services:
       mongo:
         image: mongo:latest
-        env:
-          MONGO_INITDB_ROOT_USERNAME: mongodb
-          MONGO_INITDB_ROOT_PASSWORD: password
-          MONGO_INITDB_DATABASE: wizer
         ports:
           - 27017:27017
     steps:
@@ -89,10 +81,6 @@ jobs:
     services:
       mongo:
         image: mongo
-        env:
-          MONGO_INITDB_ROOT_USERNAME: mongodb
-          MONGO_INITDB_ROOT_PASSWORD: password
-          MONGO_INITDB_DATABASE: wizer
         ports:
           - 27017:27017
     steps:
