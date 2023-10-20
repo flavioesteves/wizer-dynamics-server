@@ -1,6 +1,6 @@
 use serde_aux::field_attributes::deserialize_number_from_string;
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct Settings {
     pub application: ApplicationSettings,
     pub database: DatabaseSettings,
@@ -8,14 +8,14 @@ pub struct Settings {
     pub jwt: JWTSettings,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct ApplicationSettings {
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub port: u16,
     pub host: String,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct DatabaseSettings {
     pub username: String,
     pub password: String,
@@ -26,7 +26,7 @@ pub struct DatabaseSettings {
     pub database_name: String,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct JWTSettings {
     pub secret: String,
     pub expired_in: String,
@@ -34,7 +34,7 @@ pub struct JWTSettings {
     pub max_age: u16,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct CloudSettings {
     pub mongodb_uri: String,
 }
