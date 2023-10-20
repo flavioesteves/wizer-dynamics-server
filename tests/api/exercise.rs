@@ -3,10 +3,6 @@ use crate::helpers::spawn_app;
 //TODO remove the dependency of the database
 // replace by a mockup DB
 
-struct ExerciseData {
-    id: String,
-}
-
 #[tokio::test]
 async fn get_all_exercises_status_200() {
     // Arrange
