@@ -29,7 +29,6 @@ jobs:
           MONGO_INITDB_ROOT_PASSWORD: password
           MONGO_INITDB_DATABASE: wizer
         ports:
-        ports:
           - 27017:27017
     steps:
       - name: Check out repository code
