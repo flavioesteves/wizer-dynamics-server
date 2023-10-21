@@ -2,6 +2,7 @@ use actix_web::{web, web::ServiceConfig};
 
 use crate::middleware::jwt_controller;
 
+#[tracing::instrument(name = "Route Handler: JWT", skip(cfg))]
 pub fn config_routes(cfg: &mut ServiceConfig) {
     cfg.service(
         web::scope("/auth/login")

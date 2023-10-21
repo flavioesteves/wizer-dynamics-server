@@ -16,6 +16,7 @@ use crate::database::user_db;
 use crate::middleware::jwt_model::{AppState, LoginUserSchema, RegisterUserSchema, TokenClaims};
 use crate::models::user::User;
 
+#[tracing::instrument(name = "Controller: JWT Register")]
 pub async fn register(request: Json<RegisterUserSchema>, data: Data<AppState>) -> HttpResponse {
     let user_exists: bool =
         user_db::get_user_by_email(data.client.clone(), request.email.to_owned())
@@ -51,6 +52,7 @@ pub async fn register(request: Json<RegisterUserSchema>, data: Data<AppState>) -
     HttpResponse::Ok().json(json!({"status": "success", "data": user_data}))
 }
 
+#[tracing::instrument(name = "Controller: JWT Login")]
 pub async fn login(request: Json<LoginUserSchema>, data: Data<AppState>) -> HttpResponse {
     let user = user_db::get_user_by_email(data.client.clone(), request.email.to_owned())
         .await

@@ -2,6 +2,7 @@ use actix_web::{web, web::ServiceConfig};
 
 use crate::controllers::user;
 
+#[tracing::instrument(name = "Route Handler: User", skip(cfg))]
 pub fn config_routes(cfg: &mut ServiceConfig) {
     cfg.service(
         web::scope("/user/get_all_users")

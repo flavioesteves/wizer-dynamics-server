@@ -2,6 +2,7 @@ use actix_web::{web, web::ServiceConfig};
 
 use crate::controllers::training_plan;
 
+#[tracing::instrument(name = "Route Handler: Training Plan", skip(cfg))]
 pub fn config_routes(cfg: &mut ServiceConfig) {
     cfg.service(
         web::scope("/training-plan")

@@ -13,6 +13,7 @@ use crate::middleware::jwt_model::AppState;
 use crate::database::user_db;
 use crate::models::user::User;
 
+#[tracing::instrument(name = "Post User")]
 pub async fn post_user(request: Json<User>) -> Result<HttpResponse, Error> {
     let current_time = Utc::now();
     let user = User::new(
@@ -25,6 +26,7 @@ pub async fn post_user(request: Json<User>) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(json!(&user)))
 }
 
+#[tracing::instrument(name = "Controller: Get All Users")]
 pub async fn get_all_users(data: Data<AppState>) -> HttpResponse {
     let users = match user_db::get_all_users(data.client.clone()).await {
         Ok(users) => users,
@@ -36,6 +38,7 @@ pub async fn get_all_users(data: Data<AppState>) -> HttpResponse {
     HttpResponse::Ok().json(&users)
 }
 
+#[tracing::instrument(name = "Controller Get User By Id")]
 pub async fn get_user_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResponse {
     let user = match user_db::get_user_by_id(data.client.clone(), _id.clone()).await {
         Ok(user) => user,
@@ -50,6 +53,7 @@ pub async fn get_user_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResp
     HttpResponse::Ok().json(&user)
 }
 
+#[tracing::instrument(name = "Controller Get User Logged")]
 pub async fn get_user_logged(
     data: Data<AppState>,
     request: HttpRequest,

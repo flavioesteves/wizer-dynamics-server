@@ -8,13 +8,12 @@ async fn health_check_status_200() {
     let client = reqwest::Client::new();
     // Act
 
-    println!("Address:{:?}", app.address);
     let response = client
-        .get(&format!("{}/health_check", app.address))
+        .get(&format!("{}/health_check", &app.address))
         .send()
         .await
         .expect("Failed to execute request.");
 
     // Assert
-    assert!(response.status().is_success());
+    assert_eq!(response.status(), 200);
 }

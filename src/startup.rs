@@ -3,9 +3,10 @@ use crate::middleware::{jwt_config::Config, jwt_model::AppState};
 
 use actix_cors::Cors;
 use actix_web::web::Data;
-use actix_web::{dev::Server, middleware::Logger, App, HttpServer};
+use actix_web::{dev::Server, App, HttpServer};
 use mongodb::Client;
 use std::net::TcpListener;
+use tracing_actix_web::TracingLogger;
 
 use crate::route_handlers::{exercise, health_check, jwt, training_plan, user};
 
@@ -16,8 +17,6 @@ pub struct Application {
 
 impl Application {
     pub async fn build(configuration: Settings) -> Result<Self, std::io::Error> {
-        // Replace by tracing
-        //env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
         let jwt_config = Config::init();
         let db_client = get_db_client(&configuration.database).await;
         let app_address = format!(
@@ -78,7 +77,7 @@ pub fn run(
                     .allowed_methods(vec!["GET", "POST", "DELETE", "PUT"])
                     .allow_any_header(),
             )
-            .wrap(Logger::default())
+            .wrap(TracingLogger::default())
     })
     .listen(listener)?
     .run();

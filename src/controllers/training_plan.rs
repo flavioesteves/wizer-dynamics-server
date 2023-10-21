@@ -8,6 +8,7 @@ use crate::database::training_plan_db;
 use crate::middleware::jwt_model::AppState;
 use crate::models::training_plan::TrainingPlan;
 
+#[tracing::instrument(name = "Controller: Get All Trainings")]
 pub async fn get_all_trainings(data: Data<AppState>) -> HttpResponse {
     let trainings = match training_plan_db::get_all_trainings(data.client.clone()).await {
         Ok(trainings) => trainings,
@@ -19,6 +20,7 @@ pub async fn get_all_trainings(data: Data<AppState>) -> HttpResponse {
     HttpResponse::Ok().json(&trainings)
 }
 
+#[tracing::instrument(name = "Controller: Add Training")]
 pub async fn add_training(data: Data<AppState>, req: Json<TrainingPlan>) -> HttpResponse {
     let exercise = TrainingPlan::new(
         req.day.clone(),
@@ -39,6 +41,7 @@ pub async fn add_training(data: Data<AppState>, req: Json<TrainingPlan>) -> Http
     HttpResponse::Ok().json(insert)
 }
 
+#[tracing::instrument(name = "Controller: Get Training By Id")]
 pub async fn get_training_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResponse {
     let exercise =
         match training_plan_db::get_training_by_id(data.client.clone(), _id.clone()).await {
@@ -54,6 +57,7 @@ pub async fn get_training_by_id(data: Data<AppState>, _id: Path<String>) -> Http
     HttpResponse::Ok().json(&exercise)
 }
 
+#[tracing::instrument(name = "Controller: Update Training by Id")]
 pub async fn update_training_by_id(
     data: Data<AppState>,
     _id: Path<String>,
@@ -85,6 +89,7 @@ pub async fn update_training_by_id(
     HttpResponse::Ok().json(&updated_training)
 }
 
+#[tracing::instrument(name = "Controller: Delete Training by Id")]
 pub async fn delete_training_by_id(data: Data<AppState>, _id: Path<String>) -> HttpResponse {
     let deleted_training =
         match training_plan_db::delete_training_by_id(data.client.clone(), _id.clone()).await {

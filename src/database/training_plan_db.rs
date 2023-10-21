@@ -10,6 +10,7 @@ use mongodb::{
     Client, Collection,
 };
 
+#[tracing::instrument(name = "Post Training", skip(client), fields(training))]
 pub async fn post_training(client: Client, training: TrainingPlan) -> Result<(), Error> {
     let trainings_collection: Collection<Document> = client
         .database(&DBSettings::default().name)
@@ -25,7 +26,7 @@ pub async fn post_training(client: Client, training: TrainingPlan) -> Result<(),
 
     Ok(())
 }
-
+#[tracing::instrument(name = "Get All Trainings")]
 pub async fn get_all_trainings(client: Client) -> Result<Vec<TrainingPlan>, Error> {
     let trainings_collection: Collection<TrainingPlan> = client
         .database(&DBSettings::default().name)
@@ -47,6 +48,7 @@ pub async fn get_all_trainings(client: Client) -> Result<Vec<TrainingPlan>, Erro
     Ok(trainings)
 }
 
+#[tracing::instrument(name = "Get Training By Id", skip(client), fields(_id))]
 pub async fn get_training_by_id(
     client: Client,
     _id: String,
@@ -66,6 +68,7 @@ pub async fn get_training_by_id(
     Ok(None)
 }
 
+#[tracing::instrument(name = "Update Training", skip(client) fields(training))]
 pub async fn update_training(
     client: Client,
     training: TrainingPlan,
@@ -91,6 +94,7 @@ pub async fn update_training(
     Ok(training_updated)
 }
 
+#[tracing::instrument(name = "Delete Training By Id", skip(client), fields(_id))]
 pub async fn delete_training_by_id(
     client: Client,
     _id: String,

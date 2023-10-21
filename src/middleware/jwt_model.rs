@@ -9,6 +9,7 @@ pub struct TokenClaims {
     pub exp: usize,
 }
 
+#[derive(Debug)]
 pub struct AppState {
     pub env: Config,
     pub client: Client,
