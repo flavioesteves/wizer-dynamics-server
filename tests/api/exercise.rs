@@ -8,9 +8,10 @@ async fn get_all_exercises_status_200() {
     // Arrange
     let app = spawn_app().await;
 
+    let client = reqwest::Client::new();
+
     // Act
-    let response = app
-        .api_client
+    let response = client
         .get(&format!("{}/exercise", &app.address))
         .send()
         .await

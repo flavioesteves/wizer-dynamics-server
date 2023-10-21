@@ -7,10 +7,11 @@ use crate::helpers::spawn_app;
 async fn get_all_trainings_status_200() {
     // Arrange
     let app = spawn_app().await;
+    let client = reqwest::Client::new();
+
     let address = format!("{}/training-plan", &app.address);
     // Act
-    let response = app
-        .api_client
+    let response = client
         .get(&address)
         .send()
         .await

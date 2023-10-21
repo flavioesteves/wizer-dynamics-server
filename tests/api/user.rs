@@ -5,9 +5,9 @@ async fn get_all_users_status_200() {
     // Arrange
     let app = spawn_app().await;
 
+    let client = reqwest::Client::new();
     // Act
-    let response = app
-        .api_client
+    let response = client
         .get(&format!("{}/user/get_all_users", &app.address))
         .send()
         .await
